@@ -1,0 +1,5 @@
+---
+profile_haproxy::collect_tag: "%{facts.networking.fqdn}"
+profile_haproxy::services: {}
+profile_haproxy::service_defaults: {}
+...

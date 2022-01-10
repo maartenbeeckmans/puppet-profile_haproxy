@@ -17,17 +17,30 @@ define profile_haproxy::frontend (
   }
 
   if size($listen_addresses_v4) != 0 {
-    profile_base::firewall::rule { "allow_ipv4_haproxy_frontent_${title}":
-      daddr => $listen_addresses_v4,
-      dport => concat($http_ports,$https_ports,$tcp_ports),
+    if $listen_addresses_v4 == ['0.0.0.0'] {
+      profile_base::firewall::rule { "allow_ipv4_haproxy_frontent_${title}":
+        dport => concat($http_ports,$https_ports,$tcp_ports),
+      }
+    } else {
+      profile_base::firewall::rule { "allow_ipv4_haproxy_frontent_${title}":
+        daddr => $listen_addresses_v4,
+        dport => concat($http_ports,$https_ports,$tcp_ports),
+      }
     }
   }
 
   if size($listen_addresses_v6) != 0 {
-    profile_base::firewall::rule { "allow_ipv6_haproxy_frontent_${title}":
-      daddr    => $listen_addresses_v6,
-      dport    => concat($http_ports,$https_ports,$tcp_ports),
-      set_type => 'ip6',
+    if $listen_addresses_v6 == ['::'] {
+      profile_base::firewall::rule { "allow_ipv6_haproxy_frontent_${title}":
+        dport    => concat($http_ports,$https_ports,$tcp_ports),
+        set_type => 'ip6',
+      }
+    } else {
+      profile_base::firewall::rule { "allow_ipv6_haproxy_frontent_${title}":
+        daddr    => $listen_addresses_v6,
+        dport    => concat($http_ports,$https_ports,$tcp_ports),
+        set_type => 'ip6',
+      }
     }
   }
 
